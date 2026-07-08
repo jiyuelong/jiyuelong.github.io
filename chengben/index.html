@@ -74,8 +74,8 @@ tr:hover td{background:#fafbfc}
 <body>
 <div class="wrap">
 <h1>📊 Q3 成本考核看板</h1>
-<div class="subtitle">北京盛世兄弟汽车租赁有限公司 · 数据截止 2026-07-06</div>
-<div class="warn">⚠️ 7 月事故数据尚未录入，本页为空壳版。含事故金额的 3 项 KPI 及大队卡片"单均成本 / 达成率"待事故补录后回填。</div>
+<div class="subtitle">北京盛世兄弟汽车租赁有限公司 · 数据截止 2026-07-07</div>
+<div class="tips">📝 7 月事故已录入 8 起（含 1 起金额待定）。所有含事故金额的 KPI 与大队卡片已回填。</div>
 
 <div class="progress-wrap">
 <div class="progress-title"><span>🎯 Q3 进度（2026/7/1 - 2026/9/30）</span><span id="progress-label">-</span></div>
@@ -84,25 +84,42 @@ tr:hover td{background:#fafbfc}
 
 <div class="section-title">📌 Q3 累计核心 KPI</div>
 <div class="kpi-grid">
-  <div class="kpi good"><div class="kpi-label">Q3 累计完单</div><div class="kpi-value" id="kpi-orders">-</div><div class="kpi-hint">7 大队 + 新桔队 合计（7/1-7/6）</div></div>
+  <div class="kpi good"><div class="kpi-label">Q3 累计完单</div><div class="kpi-value" id="kpi-orders">-</div><div class="kpi-hint">7 大队 + 新桔队 合计（7/1-7/7）</div></div>
   <div class="kpi good"><div class="kpi-label">Q3 累计可出险金额</div><div class="kpi-value" id="kpi-amount">-</div><div class="kpi-hint">= 完单 × 1.47</div></div>
   <div class="kpi target"><div class="kpi-label">单均成本目标</div><div class="kpi-value">≤ 1.47</div><div class="kpi-hint"><span class="badge target">考核基准</span></div></div>
   <div class="kpi target"><div class="kpi-label">达成率目标</div><div class="kpi-value">≥ 100%</div><div class="kpi-hint"><span class="badge target">考核基准</span></div></div>
 </div>
 
-<div class="section-title">🚨 事故 KPI（7 月数据待补录）</div>
+<div class="section-title">🚨 事故 KPI（含 1 起金额待定，未计入合计）</div>
 <div class="kpi-grid">
-  <div class="kpi empty"><div class="kpi-label">Q3 累计出险金额</div><div class="kpi-value">7 月事故数据待补录</div><div class="kpi-hint">补录后自动汇总</div></div>
-  <div class="kpi empty"><div class="kpi-label">单均成本（实际）</div><div class="kpi-value">7 月事故数据待补录</div><div class="kpi-hint">= 出险 ÷ 完单</div></div>
-  <div class="kpi empty"><div class="kpi-label">达成率（实际）</div><div class="kpi-value">7 月事故数据待补录</div><div class="kpi-hint">= 可出险 ÷ 出险</div></div>
+  <div class="kpi danger"><div class="kpi-label">Q3 累计出险金额</div><div class="kpi-value" id="kpi-acc-amount">-</div><div class="kpi-hint"><span id="kpi-acc-count">-</span> 起</div></div>
+  <div class="kpi" id="kpi-cost-wrap"><div class="kpi-label">单均成本（实际）</div><div class="kpi-value" id="kpi-cost">-</div><div class="kpi-hint">= 出险 ÷ 完单，目标 ≤ 1.47</div></div>
+  <div class="kpi" id="kpi-dacheng-wrap"><div class="kpi-label">达成率（实际）</div><div class="kpi-value" id="kpi-dacheng">-</div><div class="kpi-hint">= 可出险 ÷ 出险，目标 ≥ 100%</div></div>
+</div>
+
+<div class="section-title">⚖️ Q3 成本考核扣罚规则</div>
+<div class="tips" id="chufa-tips" style="border-left-color:#3b82f6">当前达成率 <b id="chufa-rate">-</b>，命中 <b id="chufa-hit">-</b> 档 → 最终扣罚 <b id="chufa-pct" style="color:#dc2626">-</b> <span id="chufa-note" style="color:#6b7280"></span></div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>指标达成率</th><th>交通部分扣罚</th><th>最终扣罚</th><th>当前</th></tr></thead>
+    <tbody id="tbl-chufa"></tbody>
+  </table>
 </div>
 
 <div class="section-title">🏁 7 大队卡片</div>
 <div class="team-grid" id="team-grid"></div>
 
 <div class="section-title">📈 数据可视化</div>
-<div class="chart"><div class="chart-title">各大队完单日趋势（7/1-7/6）</div><div class="chart-box" id="chart-trend"></div></div>
+<div class="chart"><div class="chart-title">各大队完单日趋势（7/1-7/7）</div><div class="chart-box" id="chart-trend"></div></div>
 <div class="chart"><div class="chart-title">各大队可出险金额分布（=完单×1.47）</div><div class="chart-box" id="chart-amount"></div></div>
+
+<div class="section-title">📋 7 月事故明细</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>出险日期</th><th>司机</th><th>工号</th><th>大队</th><th>预估金额</th><th>案件状态</th><th>是否出险</th></tr></thead>
+<tbody id="tbl-accidents"></tbody>
+</table>
+</div>
 
 <div class="section-title">🏆 司机 Q3 累计完单 TOP 50</div>
 <div class="table-wrap">
@@ -116,11 +133,11 @@ tr:hover td{background:#fafbfc}
 </div>
 
 <script>
-const DATA={"teams": ["一队", "二队", "三队", "四队", "五队", "八队", "房山队", "新桔队"], "dates": ["2026-07-01", "2026-07-02", "2026-07-03", "2026-07-04", "2026-07-05", "2026-07-06"], "team_orders": {"一队": 5526, "二队": 5061, "三队": 6291, "四队": 5141, "五队": 6985, "八队": 7073, "房山队": 3830, "新桔队": 5091}, "team_amount_out": {"一队": 8123.22, "二队": 7439.67, "三队": 9247.77, "四队": 7557.27, "五队": 10267.95, "八队": 10397.31, "房山队": 5630.1, "新桔队": 7483.77}, "team_day_orders": {"一队": [914, 986, 1112, 982, 764, 768], "二队": [862, 884, 1079, 849, 635, 752], "三队": [1048, 1117, 1189, 1121, 886, 930], "四队": [826, 920, 1042, 877, 724, 752], "五队": [1164, 1168, 1406, 1227, 962, 1058], "八队": [1120, 1245, 1387, 1282, 985, 1054], "房山队": [644, 652, 649, 633, 575, 677], "新桔队": [919, 970, 769, 922, 723, 788]}, "q3_total_orders": 44998, "q3_total_amount_out": 66147.06, "driver_top50": [{"gonghao": "357261", "name": "陆雨", "team": "房山队", "orders": 62}, {"gonghao": "11850261", "name": "亢文成", "team": "二队", "orders": 58}, {"gonghao": "11795208", "name": "王国锋", "team": "新桔队", "orders": 57}, {"gonghao": "11463678", "name": "王文华", "team": "新桔队", "orders": 57}, {"gonghao": "11127424", "name": "郭常见", "team": "三队", "orders": 56}, {"gonghao": "11718862", "name": "乔祥祥", "team": "八队", "orders": 55}, {"gonghao": "11543402", "name": "魏坤卫", "team": "房山队", "orders": 55}, {"gonghao": "11538600", "name": "邓善锋", "team": "五队", "orders": 55}, {"gonghao": "11274884", "name": "辛鹏鹏", "team": "二队", "orders": 54}, {"gonghao": "11267182", "name": "王德忠", "team": "一队", "orders": 54}, {"gonghao": "11467667", "name": "曾庆深", "team": "三队", "orders": 53}, {"gonghao": "976638", "name": "陈文博", "team": "四队", "orders": 53}, {"gonghao": "11445191", "name": "刘姜峰", "team": "一队", "orders": 53}, {"gonghao": "11125643", "name": "张超", "team": "新桔队", "orders": 52}, {"gonghao": "11926930", "name": "张春光", "team": "一队", "orders": 52}, {"gonghao": "11471162", "name": "朱宇飞", "team": "八队", "orders": 51}, {"gonghao": "11547705", "name": "侯川平", "team": "五队", "orders": 50}, {"gonghao": "416355", "name": "董广月", "team": "三队", "orders": 50}, {"gonghao": "750958", "name": "孔德欣", "team": "八队", "orders": 50}, {"gonghao": "11103861", "name": "柴文杰", "team": "四队", "orders": 50}, {"gonghao": "11127675", "name": "闫东健", "team": "一队", "orders": 50}, {"gonghao": "11303775", "name": "杨丽涛", "team": "新桔队", "orders": 50}, {"gonghao": "11958237", "name": "张众骞", "team": "二队", "orders": 50}, {"gonghao": "313136", "name": "杜兵雷", "team": "二队", "orders": 49}, {"gonghao": "11708316", "name": "夏建桥", "team": "一队", "orders": 49}, {"gonghao": "465256", "name": "林能强", "team": "八队", "orders": 49}, {"gonghao": "564430", "name": "王云龙", "team": "二队", "orders": 49}, {"gonghao": "682849", "name": "许中伟", "team": "八队", "orders": 49}, {"gonghao": "11130505", "name": "马文坛", "team": "三队", "orders": 49}, {"gonghao": "11660071", "name": "桑敬印", "team": "房山队", "orders": 49}, {"gonghao": "11457188", "name": "金烨平", "team": "新桔队", "orders": 49}, {"gonghao": "11602250", "name": "刘玉芳", "team": "新桔队", "orders": 49}, {"gonghao": "11186145", "name": "赵德胜", "team": "八队", "orders": 48}, {"gonghao": "601404", "name": "朱雪超", "team": "八队", "orders": 48}, {"gonghao": "11321827", "name": "郭行", "team": "房山队", "orders": 48}, {"gonghao": "11158377", "name": "朱亚林", "team": "房山队", "orders": 48}, {"gonghao": "607665", "name": "梁巧文", "team": "三队", "orders": 47}, {"gonghao": "114318", "name": "李艳松", "team": "一队", "orders": 47}, {"gonghao": "615762", "name": "许磊", "team": "八队", "orders": 47}, {"gonghao": "953893", "name": "王慎怀", "team": "一队", "orders": 47}, {"gonghao": "459922", "name": "尚昆", "team": "房山队", "orders": 47}, {"gonghao": "797402", "name": "邢雷达", "team": "八队", "orders": 47}, {"gonghao": "11967291", "name": "刘世欢", "team": "二队", "orders": 47}, {"gonghao": "11273221", "name": "汤显达", "team": "五队", "orders": 47}, {"gonghao": "11596795", "name": "常保山", "team": "新桔队", "orders": 47}, {"gonghao": "11861166", "name": "刘立国", "team": "八队", "orders": 47}, {"gonghao": "672111", "name": "黄昌江", "team": "四队", "orders": 46}, {"gonghao": "676291", "name": "聂新愿", "team": "新桔队", "orders": 46}, {"gonghao": "11753972", "name": "史旺", "team": "五队", "orders": 46}, {"gonghao": "11634834", "name": "韩英霞", "team": "三队", "orders": 46}]};
+const DATA={"teams": ["一队", "二队", "三队", "四队", "五队", "八队", "房山队", "新桔队"], "dates": ["2026-07-01", "2026-07-02", "2026-07-03", "2026-07-04", "2026-07-05", "2026-07-06", "2026-07-07"], "team_orders": {"一队": 6477, "二队": 5861, "三队": 7309, "四队": 5986, "五队": 8096, "八队": 8256, "房山队": 4453, "新桔队": 5776}, "team_amount_out": {"一队": 9521.19, "二队": 8615.67, "三队": 10744.23, "四队": 8799.42, "五队": 11901.12, "八队": 12136.32, "房山队": 6545.91, "新桔队": 8490.72}, "team_day_orders": {"一队": [914, 986, 1112, 982, 764, 768, 951], "二队": [862, 884, 1079, 849, 635, 752, 800], "三队": [1048, 1117, 1189, 1121, 886, 930, 1018], "四队": [826, 920, 1042, 877, 724, 752, 845], "五队": [1164, 1168, 1406, 1227, 962, 1058, 1111], "八队": [1120, 1245, 1387, 1282, 985, 1054, 1183], "房山队": [644, 652, 649, 633, 575, 677, 623], "新桔队": [919, 970, 769, 922, 723, 788, 685]}, "q3_total_orders": 52214, "q3_total_amount_out": 76754.58, "driver_top50": [{"gonghao": "357261", "name": "陆雨", "team": "房山队", "orders": 69}, {"gonghao": "11850261", "name": "亢文成", "team": "二队", "orders": 68}, {"gonghao": "11127424", "name": "郭常见", "team": "三队", "orders": 67}, {"gonghao": "11795208", "name": "王国锋", "team": "新桔队", "orders": 66}, {"gonghao": "11543402", "name": "魏坤卫", "team": "房山队", "orders": 65}, {"gonghao": "11538600", "name": "邓善锋", "team": "五队", "orders": 65}, {"gonghao": "11463678", "name": "王文华", "team": "新桔队", "orders": 64}, {"gonghao": "976638", "name": "陈文博", "team": "四队", "orders": 63}, {"gonghao": "11267182", "name": "王德忠", "team": "一队", "orders": 63}, {"gonghao": "11718862", "name": "乔祥祥", "team": "八队", "orders": 62}, {"gonghao": "11445191", "name": "刘姜峰", "team": "一队", "orders": 62}, {"gonghao": "11127675", "name": "闫东健", "team": "一队", "orders": 62}, {"gonghao": "11926930", "name": "张春光", "team": "一队", "orders": 62}, {"gonghao": "11186145", "name": "赵德胜", "team": "八队", "orders": 60}, {"gonghao": "11274884", "name": "辛鹏鹏", "team": "二队", "orders": 60}, {"gonghao": "750958", "name": "孔德欣", "team": "八队", "orders": 60}, {"gonghao": "11130505", "name": "马文坛", "team": "三队", "orders": 60}, {"gonghao": "11125643", "name": "张超", "team": "新桔队", "orders": 60}, {"gonghao": "11471162", "name": "朱宇飞", "team": "八队", "orders": 60}, {"gonghao": "416355", "name": "董广月", "team": "三队", "orders": 58}, {"gonghao": "607665", "name": "梁巧文", "team": "三队", "orders": 57}, {"gonghao": "313136", "name": "杜兵雷", "team": "二队", "orders": 57}, {"gonghao": "953893", "name": "王慎怀", "team": "一队", "orders": 57}, {"gonghao": "564430", "name": "王云龙", "team": "二队", "orders": 57}, {"gonghao": "11158377", "name": "朱亚林", "team": "房山队", "orders": 57}, {"gonghao": "682849", "name": "许中伟", "team": "八队", "orders": 57}, {"gonghao": "11103861", "name": "柴文杰", "team": "四队", "orders": 57}, {"gonghao": "11958237", "name": "张众骞", "team": "二队", "orders": 57}, {"gonghao": "11467667", "name": "曾庆深", "team": "三队", "orders": 56}, {"gonghao": "375306", "name": "邓勋", "team": "一队", "orders": 56}, {"gonghao": "797402", "name": "邢雷达", "team": "八队", "orders": 56}, {"gonghao": "11967291", "name": "刘世欢", "team": "二队", "orders": 56}, {"gonghao": "11457188", "name": "金烨平", "team": "新桔队", "orders": 56}, {"gonghao": "11547705", "name": "侯川平", "team": "五队", "orders": 55}, {"gonghao": "114318", "name": "李艳松", "team": "一队", "orders": 55}, {"gonghao": "615762", "name": "许磊", "team": "八队", "orders": 55}, {"gonghao": "622220", "name": "肖荣妹", "team": "房山队", "orders": 55}, {"gonghao": "676291", "name": "聂新愿", "team": "新桔队", "orders": 55}, {"gonghao": "11708316", "name": "夏建桥", "team": "一队", "orders": 55}, {"gonghao": "11932389", "name": "任治强", "team": "四队", "orders": 55}, {"gonghao": "11634834", "name": "韩英霞", "team": "三队", "orders": 55}, {"gonghao": "11958624", "name": "张占海", "team": "五队", "orders": 55}, {"gonghao": "11181018", "name": "王靖淋", "team": "五队", "orders": 55}, {"gonghao": "11660071", "name": "桑敬印", "team": "房山队", "orders": 55}, {"gonghao": "465256", "name": "林能强", "team": "八队", "orders": 54}, {"gonghao": "459922", "name": "尚昆", "team": "房山队", "orders": 54}, {"gonghao": "11235824", "name": "刘海振", "team": "房山队", "orders": 54}, {"gonghao": "11782360", "name": "张其森", "team": "八队", "orders": 53}, {"gonghao": "11273221", "name": "汤显达", "team": "五队", "orders": 53}, {"gonghao": "11515824", "name": "任君洋", "team": "八队", "orders": 53}], "accidents": [{"date": "2026-07-07", "name": "张爽", "gonghao": "11798175", "team": "一队", "amount": 4000, "status": "未结案", "class": "保险理赔（预估）"}, {"date": "2026-07-05", "name": "苏庆杰", "gonghao": "726529", "team": "四队", "amount": 15000, "status": "未结案", "class": "保险理赔"}, {"date": "2026-07-04", "name": "白玉", "gonghao": "11883364", "team": "五队", "amount": 30000, "status": "未结案", "class": "保险理赔"}, {"date": "2026-07-03", "name": "李雄辉", "gonghao": "11174518", "team": "三队", "amount": 10000, "status": "未结案", "class": "保险理赔"}, {"date": "2026-07-03", "name": "郭金龙", "gonghao": "11793057", "team": "四队", "amount": 8000, "status": "未结案", "class": "保险理赔"}, {"date": "2026-07-03", "name": "陈天聪", "gonghao": "11137853", "team": "三队", "amount": null, "status": "未结案", "class": "待定"}, {"date": "2026-07-01", "name": "许长安", "gonghao": "362625", "team": "二队", "amount": 9513, "status": "未结案", "class": "保险理赔"}, {"date": "2026-07-01", "name": "梁星图", "gonghao": "11607111", "team": "一队", "amount": 5000, "status": "未结案", "class": "保险理赔"}], "team_accident_amount": {"一队": 9000.0, "二队": 9513.0, "三队": 10000.0, "四队": 23000.0, "五队": 30000.0, "八队": 0.0, "房山队": 0.0, "新桔队": 0.0}, "team_accident_count": {"一队": 2, "二队": 1, "三队": 2, "四队": 2, "五队": 1, "八队": 0, "房山队": 0, "新桔队": 0}, "team_pending_count": {"一队": 0, "二队": 0, "三队": 1, "四队": 0, "五队": 0, "八队": 0, "房山队": 0, "新桔队": 0}, "accident_total_amount": 81513, "accident_total_count": 8, "accident_pending_count": 1, "actual_cost_per_order": 1.5611, "actual_dacheng_rate": 0.9416};
 
 (function(){
   const start=new Date('2026-07-01'), end=new Date('2026-09-30');
-  const now=new Date('2026-07-07');
+  const now=new Date('2026-07-08');
   const totalDays=Math.round((end-start)/86400000)+1;
   const passedDays=Math.round((now-start)/86400000)+1;
   const pct=Math.min(100,Math.max(0,(passedDays/totalDays)*100));
@@ -131,16 +148,89 @@ const DATA={"teams": ["一队", "二队", "三队", "四队", "五队", "八队"
 document.getElementById('kpi-orders').textContent=DATA.q3_total_orders.toLocaleString();
 document.getElementById('kpi-amount').textContent=DATA.q3_total_amount_out.toLocaleString(undefined,{maximumFractionDigits:2});
 
+// 事故 KPI
+(function(){
+  const accAmt = DATA.accident_total_amount || 0;
+  const accCnt = DATA.accident_total_count || 0;
+  const cost = DATA.actual_cost_per_order || 0;
+  const dacheng = (DATA.actual_dacheng_rate || 0) * 100;
+  document.getElementById('kpi-acc-amount').textContent = accAmt.toLocaleString();
+  document.getElementById('kpi-acc-count').textContent = accCnt;
+  const costEl = document.getElementById('kpi-cost');
+  costEl.textContent = cost.toFixed(3);
+  document.getElementById('kpi-cost-wrap').classList.add(cost<=1.47 ? 'good' : (cost<=2 ? 'warn2' : 'danger'));
+  const dachengEl = document.getElementById('kpi-dacheng');
+  dachengEl.textContent = dacheng.toFixed(2) + '%';
+  document.getElementById('kpi-dacheng-wrap').classList.add(dacheng>=100 ? 'good' : (dacheng>=80 ? 'warn2' : 'danger'));
+})();
+
+// Q3 成本考核扣罚档位（源：飞书安全知识库「成本考核指标」→ 交通部分扣罚 → 最终扣罚）
+(function(){
+  const rate = (DATA.actual_dacheng_rate || 0) * 100;
+  const LADDER = [
+    {label:'≥100%',              traffic:'不扣罚',  final:'0%',  color:'#059669'},
+    {label:'≥90% ~ <100%',       traffic:'扣10%',   final:'3%',  color:'#d97706'},
+    {label:'≥80% ~ <90%',        traffic:'扣20%',   final:'6%',  color:'#d97706'},
+    {label:'≥70% ~ <80%',        traffic:'扣40%',   final:'12%', color:'#dc2626'},
+    {label:'<70%（保司出险率≥100%）', traffic:'扣60%',   final:'18%', color:'#dc2626'},
+    {label:'<70%（保司出险率<100%）', traffic:'扣100%',  final:'30%', color:'#dc2626'},
+  ];
+  let hitIdx;
+  if      (rate >= 100) hitIdx = 0;
+  else if (rate >= 90)  hitIdx = 1;
+  else if (rate >= 80)  hitIdx = 2;
+  else if (rate >= 70)  hitIdx = 3;
+  else                  hitIdx = 4;
+
+  document.getElementById('chufa-rate').textContent = rate.toFixed(2) + '%';
+  document.getElementById('chufa-hit').textContent  = LADDER[hitIdx].label;
+  const pctEl = document.getElementById('chufa-pct');
+  pctEl.textContent = LADDER[hitIdx].final;
+  pctEl.style.color = LADDER[hitIdx].color;
+  if (rate < 70) {
+    document.getElementById('chufa-note').textContent = '（<70% 需查保司出险率确定档位，18%~30%）';
+  }
+  const tips = document.getElementById('chufa-tips');
+  tips.style.borderLeftColor = LADDER[hitIdx].color;
+  tips.style.background = hitIdx===0 ? '#d1fae5' : (hitIdx<=2 ? '#fef3c7' : '#fee2e2');
+
+  const tb = document.getElementById('tbl-chufa');
+  LADDER.forEach((r,i)=>{
+    const hit = i === hitIdx;
+    const bg = hit ? (i===0?'#a7f3d0':(i<=2?'#fde68a':'#fecaca')) : '';
+    const mark = hit ? `<b style="color:${r.color}">⬅ 当前</b>` : '';
+    tb.insertAdjacentHTML('beforeend',
+      `<tr style="background:${bg};font-weight:${hit?'700':'400'}"><td>${r.label}</td><td>${r.traffic}</td><td style="color:${r.color};font-weight:700">${r.final}</td><td>${mark}</td></tr>`);
+  });
+})();
+
 const grid=document.getElementById('team-grid');
 DATA.teams.forEach(t=>{
   const orders=DATA.team_orders[t]||0;
   const amt=DATA.team_amount_out[t]||0;
+  const accAmt=(DATA.team_accident_amount||{})[t]||0;
+  const accCnt=(DATA.team_accident_count||{})[t]||0;
+  const pending=(DATA.team_pending_count||{})[t]||0;
+  const costPer = orders>0 ? (accAmt/orders) : 0;
+  const dacheng = accAmt>0 ? (amt/accAmt*100) : null;
+  let costHtml, dachengHtml;
+  if(accCnt===0){
+    costHtml = `<div class="team-row"><span>单均成本</span><b style="color:#059669">无事故</b></div>`;
+    dachengHtml = `<div class="team-row"><span>达成率</span><b style="color:#059669">-</b></div>`;
+  }else{
+    const costCls = costPer<=1.47 ? 'rate-high' : (costPer<=2 ? 'rate-mid' : 'rate-low');
+    const dachengCls = dacheng>=100 ? 'rate-high' : (dacheng>=80 ? 'rate-mid' : 'rate-low');
+    costHtml = `<div class="team-row"><span>单均成本</span><b class="${costCls}">${costPer.toFixed(3)}</b></div>`;
+    dachengHtml = `<div class="team-row"><span>达成率</span><b class="${dachengCls}">${dacheng.toFixed(1)}%</b></div>`;
+  }
+  const accBadge = accCnt>0 ? `<span class="badge no" style="margin-left:4px">${accCnt}起${pending?'含'+pending+'待定':''}</span>` : '';
   grid.insertAdjacentHTML('beforeend',`
     <div class="team-card">
-      <div class="team-name">${t} <span class="badge">${orders} 单</span></div>
+      <div class="team-name">${t} <span>${accBadge}<span class="badge">${orders} 单</span></span></div>
       <div class="team-row"><span>可出险金额</span><b>${amt.toLocaleString(undefined,{maximumFractionDigits:2})}</b></div>
-      <div class="team-row empty"><span>单均成本</span><b>待事故数据</b></div>
-      <div class="team-row empty"><span>达成率</span><b>待事故数据</b></div>
+      <div class="team-row"><span>出险金额</span><b style="color:${accAmt>amt?'#dc2626':'#1f2937'}">${accAmt.toLocaleString(undefined,{maximumFractionDigits:2})}</b></div>
+      ${costHtml}
+      ${dachengHtml}
     </div>`);
 });
 
@@ -174,6 +264,19 @@ const tbl=document.getElementById('tbl-top50');
 DATA.driver_top50.forEach((d,i)=>{
   const cls=i===0?'r1':(i===1?'r2':(i===2?'r3':''));
   tbl.insertAdjacentHTML('beforeend',`<tr><td><span class="rank ${cls}">${i+1}</span></td><td>${d.gonghao}</td><td>${d.name||''}</td><td>${d.team||''}</td><td><b>${d.orders}</b></td></tr>`);
+});
+
+// 事故明细表（按日期倒序）
+const accTbl=document.getElementById('tbl-accidents');
+const sortedAcc=[...(DATA.accidents||[])].sort((a,b)=>b.date.localeCompare(a.date));
+sortedAcc.forEach(a=>{
+  const amtHtml = a.amount==null
+    ? '<span class="badge orange">待定</span>'
+    : `<b style="color:#dc2626">${a.amount.toLocaleString()}</b>`;
+  const clsBadge = a.class==='保险理赔'
+    ? '<span class="badge no">保险理赔</span>'
+    : `<span class="badge">${a.class}</span>`;
+  accTbl.insertAdjacentHTML('beforeend',`<tr><td>${a.date.slice(5)}</td><td><b>${a.name}</b></td><td>${a.gonghao}</td><td><span class="pill team">${a.team}</span></td><td>${amtHtml}</td><td><span class="badge">${a.status}</span></td><td>${clsBadge}</td></tr>`);
 });
 </script>
 </body>
