@@ -13,16 +13,64 @@ body {
   color: #fff;
   padding: 20px;
 }
-.wrap { max-width: 720px; margin: 0 auto; padding-top: 8vh; }
+.wrap { max-width: 760px; margin: 0 auto; padding-top: 5vh; padding-bottom: 5vh; }
 h1 { font-size: 28px; text-align: center; margin-bottom: 6px; font-weight: 600; letter-spacing: 2px; }
-.sub { text-align: center; color: #a8b0d1; font-size: 13px; margin-bottom: 40px; }
-.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.sub { text-align: center; color: #a8b0d1; font-size: 13px; margin-bottom: 28px; }
+
+/* Hero: driver360 聚合看板 */
+.hero {
+  background: linear-gradient(135deg, rgba(97, 108, 210, 0.35) 0%, rgba(150, 90, 200, 0.35) 100%);
+  border: 1px solid rgba(255,255,255,0.22);
+  border-radius: 20px;
+  padding: 22px 24px;
+  margin-bottom: 20px;
+  text-decoration: none;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  transition: all 0.25s;
+  position: relative;
+  overflow: hidden;
+}
+.hero::after {
+  content: "推荐";
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  background: #ff7a45;
+  color: #fff;
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+.hero:hover, .hero:active {
+  transform: translateY(-3px);
+  border-color: rgba(255,255,255,0.35);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+}
+.hero .hicon { font-size: 44px; flex-shrink: 0; }
+.hero .hbody { flex: 1; }
+.hero .hname { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+.hero .hdesc { font-size: 12px; color: #d0d6f0; line-height: 1.5; }
+
+/* 子看板 4×2 网格 */
+.section-title {
+  font-size: 13px;
+  color: #8891b8;
+  letter-spacing: 2px;
+  margin: 24px 0 12px 4px;
+  font-weight: 500;
+}
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .card {
   background: rgba(255,255,255,0.08);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 16px;
-  padding: 28px 20px;
+  border-radius: 14px;
+  padding: 22px 16px;
   text-align: center;
   text-decoration: none;
   color: #fff;
@@ -34,14 +82,17 @@ h1 { font-size: 28px; text-align: center; margin-bottom: 6px; font-weight: 600; 
   background: rgba(255,255,255,0.15);
   border-color: rgba(255,255,255,0.25);
 }
-.icon { font-size: 40px; margin-bottom: 10px; }
-.name { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
-.desc { font-size: 12px; color: #a8b0d1; }
-.foot { text-align: center; margin-top: 40px; color: #6a7196; font-size: 11px; }
+.icon { font-size: 34px; margin-bottom: 8px; }
+.name { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+.desc { font-size: 11px; color: #a8b0d1; }
+.foot { text-align: center; margin-top: 32px; color: #6a7196; font-size: 11px; }
 @media (max-width: 480px) {
   h1 { font-size: 22px; }
-  .grid { grid-template-columns: 1fr; }
-  .card { padding: 20px; }
+  .hero { flex-direction: column; text-align: center; }
+  .hero .hicon { font-size: 40px; }
+  .card { padding: 18px 14px; }
+  .icon { font-size: 30px; }
+  .name { font-size: 15px; }
 }
 </style>
 </head>
@@ -49,6 +100,16 @@ h1 { font-size: 28px; text-align: center; margin-bottom: 6px; font-weight: 600; 
 <div class="wrap">
   <h1>盛世代驾数据看板</h1>
   <div class="sub">北京盛世兄弟汽车租赁有限公司</div>
+
+  <a class="hero" href="./driver360/">
+    <div class="hicon">🎯</div>
+    <div class="hbody">
+      <div class="hname">司机 360 全景看板</div>
+      <div class="hdesc">按司机聚合工单/违章/事故/画像，支持模糊搜索 · 一站看清每位司机风险</div>
+    </div>
+  </a>
+
+  <div class="section-title">— 核心运营 —</div>
   <div class="grid">
     <a class="card" href="./cejiu/">
       <div class="icon">🍺</div>
@@ -71,7 +132,32 @@ h1 { font-size: 28px; text-align: center; margin-bottom: 6px; font-weight: 600; 
       <div class="desc">违章明细 · 大队汇总</div>
     </a>
   </div>
-  <div class="foot">© 盛世兄弟安全部</div>
+
+  <div class="section-title">— 风险专项 —</div>
+  <div class="grid">
+    <a class="card" href="./accident/">
+      <div class="icon">🚨</div>
+      <div class="name">事故看板</div>
+      <div class="desc">责任划分 · 出险金额</div>
+    </a>
+    <a class="card" href="./gaowei/">
+      <div class="icon">⚠️</div>
+      <div class="name">高危看板</div>
+      <div class="desc">高危司机 · 累计事故</div>
+    </a>
+    <a class="card" href="./jiuwei/">
+      <div class="icon">🍷</div>
+      <div class="name">酒违看板</div>
+      <div class="desc">测酒不合格 · 酒驾追溯</div>
+    </a>
+    <a class="card" href="./jianzhi/">
+      <div class="icon">💼</div>
+      <div class="name">兼职看板</div>
+      <div class="desc">兼职司机 · 完单数据</div>
+    </a>
+  </div>
+
+  <div class="foot">© 盛世兄弟安全部 · 二大爷维护</div>
 </div>
 </body>
 </html>
