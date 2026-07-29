@@ -2,110 +2,34 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>盛世代驾数据看板</title>
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
-  background: linear-gradient(135deg, #1a1f36 0%, #2d3561 100%);
-  min-height: 100vh;
-  color: #fff;
-  padding: 20px;
-}
-.wrap { max-width: 760px; margin: 0 auto; padding-top: 5vh; padding-bottom: 5vh; }
-h1 { font-size: 28px; text-align: center; margin-bottom: 6px; font-weight: 600; letter-spacing: 2px; }
-.sub { text-align: center; color: #a8b0d1; font-size: 13px; margin-bottom: 28px; }
-.hero {
-  background: linear-gradient(135deg, rgba(97, 108, 210, 0.35) 0%, rgba(150, 90, 200, 0.35) 100%);
-  border: 1px solid rgba(255,255,255,0.22);
-  border-radius: 20px;
-  padding: 22px 24px;
-  margin-bottom: 20px;
-  text-decoration: none;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  transition: all 0.25s;
-  position: relative;
-  overflow: hidden;
-}
-.hero::after {
-  content: "推荐";
-  position: absolute;
-  top: 10px;
-  right: 12px;
-  background: #ff7a45;
-  color: #fff;
-  font-size: 10px;
-  padding: 2px 8px;
-  border-radius: 6px;
-  font-weight: 600;
-  letter-spacing: 1px;
-}
-.hero:hover, .hero:active {
-  transform: translateY(-3px);
-  border-color: rgba(255,255,255,0.35);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-}
-.hero .hicon { font-size: 44px; flex-shrink: 0; }
-.hero .hbody { flex: 1; }
-.hero .hname { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
-.hero .hdesc { font-size: 12px; color: #d0d6f0; line-height: 1.5; }
-.section-title {
-  font-size: 13px;
-  color: #8891b8;
-  letter-spacing: 2px;
-  margin: 24px 0 12px 4px;
-  font-weight: 500;
-}
-.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.card {
-  background: rgba(255,255,255,0.08);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 14px;
-  padding: 22px 16px;
-  text-align: center;
-  text-decoration: none;
-  color: #fff;
-  transition: all 0.25s;
-  display: block;
-}
-.card:hover, .card:active {
-  transform: translateY(-3px);
-  background: rgba(255,255,255,0.15);
-  border-color: rgba(255,255,255,0.25);
-}
-.icon { font-size: 34px; margin-bottom: 8px; }
-.name { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
-.desc { font-size: 11px; color: #a8b0d1; }
-.foot { text-align: center; margin-top: 32px; color: #6a7196; font-size: 11px; }
-@media (max-width: 480px) {
-  h1 { font-size: 22px; }
-  .hero { flex-direction: column; text-align: center; }
-  .hero .hicon { font-size: 40px; }
-  .card { padding: 18px 14px; }
-  .icon { font-size: 30px; }
-  .name { font-size: 15px; }
-}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif; background:#0a0f1c; color:#e6e9f5; font-size:14px; line-height:1.5; min-height:100vh; background-image:radial-gradient(circle at 15% 0%,rgba(91,141,239,.08),transparent 45%),radial-gradient(circle at 85% 100%,rgba(139,111,245,.06),transparent 45%); }
+.wrap { max-width:720px; margin:0 auto; padding:14px; }
+.hdr { background:linear-gradient(135deg,#1e3a8a 0%,#5b8def 50%,#8b6ff5 100%); color:#fff; padding:18px 16px; border-radius:14px; margin-bottom:14px; box-shadow:0 4px 16px rgba(91,141,239,.25); border:1px solid rgba(91,141,239,.3); position:relative; overflow:hidden; }
+.hdr::after { content:""; position:absolute; top:0; right:0; width:120px; height:120px; background:radial-gradient(circle,rgba(255,255,255,.12),transparent 70%); pointer-events:none; }
+.hdr h1 { margin:0 0 4px 0; font-size:19px; font-weight:700; letter-spacing:.3px; }
+.hdr .meta { font-size:12px; opacity:.88; }
+.section-title { font-size:14px; color:#9aa3bd; margin:18px 0 10px 4px; font-weight:500; display:flex; align-items:center; gap:6px; }
+.grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.card { background:#141b2d; border:1px solid #2a3352; border-radius:12px; padding:20px 14px; text-align:center; text-decoration:none; color:#e6e9f5; transition:.2s; display:block; }
+.card:hover,.card:active { background:#1c2338; border-color:#3a4670; transform:translateY(-2px); box-shadow:0 4px 12px rgba(0,0,0,.3); }
+.icon { font-size:30px; margin-bottom:6px; }
+.name { font-size:15px; font-weight:600; margin-bottom:2px; }
+.desc { font-size:11px; color:#606a85; }
+.foot { text-align:center; margin-top:24px; color:#4a5270; font-size:11px; }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>盛世代驾数据看板</h1>
-  <div class="sub">北京盛世兄弟汽车租赁有限公司</div>
+  <div class="hdr">
+    <h1>盛世代驾数据看板</h1>
+    <div class="meta">北京盛世兄弟汽车租赁有限公司 · 每日 18:00 更新</div>
+  </div>
 
-  <a class="hero" href="./driver360/">
-    <div class="hicon">🎯</div>
-    <div class="hbody">
-      <div class="hname">司机 360 全景看板</div>
-      <div class="hdesc">按司机聚合工单/违章/事故/画像，支持模糊搜索 · 一站看清每位司机风险</div>
-    </div>
-  </a>
-
-  <div class="section-title">— 核心运营 —</div>
+  <div class="section-title">📊 分维度看板</div>
   <div class="grid">
     <a class="card" href="./cejiu/">
       <div class="icon">🍺</div>
@@ -127,10 +51,6 @@ h1 { font-size: 28px; text-align: center; margin-bottom: 6px; font-weight: 600; 
       <div class="name">违章看板</div>
       <div class="desc">违章明细 · 大队汇总</div>
     </a>
-  </div>
-
-  <div class="section-title">— 风险专项 —</div>
-  <div class="grid">
     <a class="card" href="./accident/">
       <div class="icon">🚨</div>
       <div class="name">事故看板</div>
@@ -142,8 +62,8 @@ h1 { font-size: 28px; text-align: center; margin-bottom: 6px; font-weight: 600; 
       <div class="desc">高危司机 · 累计事故</div>
     </a>
     <a class="card" href="./jiuwei/">
-      <div class="icon">🍷</div>
-      <div class="name">酒违看板</div>
+      <div class="icon"></div>
+      <div class="name">酒驾风险</div>
       <div class="desc">测酒不合格 · 酒驾追溯</div>
     </a>
     <a class="card" href="./jianzhi/">
@@ -158,12 +78,12 @@ h1 { font-size: 28px; text-align: center; margin-bottom: 6px; font-weight: 600; 
     </a>
     <a class="card" href="./guishu/">
       <div class="icon">🔍</div>
-      <div class="name">归属查询</div>
+      <div class="name">司机归属查询</div>
       <div class="desc">司机归属 · 精确查询</div>
     </a>
   </div>
 
-  <div class="foot">© 盛世兄弟安全部 · 二大爷维护</div>
+  <div class="foot">数据来源：滴滴代驾后台 · 每日 18:00 更新</div>
 </div>
 </body>
 </html>
