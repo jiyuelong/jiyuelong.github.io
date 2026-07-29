@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>司机归属查询</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -23,11 +26,12 @@ input:focus { border-color: #58a6ff; }
 .label { font-size: 0.75rem; color: #8b949e; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px; }
 .value { font-size: 1.05rem; color: #f0f6fc; word-break: break-all; }
 #notfound { background: #161b22; border: 1px solid #e74c3c; border-radius: 12px; padding: 20px; margin-top: 16px; text-align: center; color: #e74c3c; }
+#loading { text-align: center; color: #8b949e; font-size: 0.85rem; margin-top: 8px; }
 </style>
 </head>
 <body>
 <div class="container">
-  <h1>🔍 司机归属查询</h1>
+  <h1> 司机归属查询</h1>
   
   <div id="auth-box" class="card">
     <h2>请输入访问口令</h2>
@@ -39,6 +43,7 @@ input:focus { border-color: #58a6ff; }
     <input type="text" id="gh-input" placeholder="输入工号查询..." />
     <div class="btn" id="search-btn">查询</div>
     <div class="stats">共收录 <span id="dc">-</span> 名司机，<span id="cc">-</span> 家公司</div>
+    <div id="loading">数据加载中...</div>
   </div>
 
   <div id="result" class="hide">
@@ -51,12 +56,14 @@ input:focus { border-color: #58a6ff; }
   <div id="notfound" class="hide">未找到该工号，请检查输入是否正确</div>
 </div>
 
-<script src="./drivers_data.js?v=2"></script>
 <script>
 (function() {
   var AUTH_HASH = '105725';
   var STORAGE_KEY = 'ss_auth_v1';
   var DATA = null;
+  var TOTAL_CHUNKS = 24;
+  var loadedChunks = 0;
+  var loadError = false;
 
   function simpleHash(str) {
     var h = 0;
@@ -66,24 +73,42 @@ input:focus { border-color: #58a6ff; }
     return String(Math.abs(h));
   }
 
-  function loadData() {
-    if (DATA) return;
-    if (window.__DRIVER_DATA__) {
-      DATA = window.__DRIVER_DATA__;
-      showStats();
-    } else {
-      document.getElementById('dc').textContent = '加载失败';
-    }
-  }
-
-  function showStats() {
-    var keys = Object.keys(DATA);
-    document.getElementById('dc').textContent = keys.length;
-    var comps = {};
-    for (var i = 0; i < keys.length; i++) {
-      comps[DATA[keys[i]].company] = 1;
-    }
-    document.getElementById('cc').textContent = Object.keys(comps).length;
+  function loadChunk(index) {
+    var s = document.createElement('script');
+    s.src = './chunks/data_' + index + '.js';
+    s.onload = function() {
+      var chunkVar = '__CHUNK_' + index + '__';
+      if (window[chunkVar]) {
+        if (!DATA) DATA = {};
+        var keys = Object.keys(window[chunkVar]);
+        for (var i = 0; i < keys.length; i++) {
+          DATA[keys[i]] = window[chunkVar][keys[i]];
+        }
+        delete window[chunkVar];
+      }
+      loadedChunks++;
+      if (loadedChunks < TOTAL_CHUNKS) {
+        loadChunk(index + 1);
+      } else {
+        // All chunks loaded
+        var keys = Object.keys(DATA);
+        document.getElementById('dc').textContent = keys.length;
+        var comps = {};
+        for (var i = 0; i < keys.length; i++) {
+          comps[DATA[keys[i]].company] = 1;
+        }
+        document.getElementById('cc').textContent = Object.keys(comps).length;
+        document.getElementById('loading').textContent = '数据加载完成';
+        setTimeout(function() {
+          document.getElementById('loading').style.display = 'none';
+        }, 1500);
+      }
+    };
+    s.onerror = function() {
+      loadError = true;
+      document.getElementById('loading').textContent = '数据加载失败，请刷新重试';
+    };
+    document.head.appendChild(s);
   }
 
   function doAuth() {
@@ -92,7 +117,7 @@ input:focus { border-color: #58a6ff; }
       localStorage.setItem(STORAGE_KEY, AUTH_HASH);
       document.getElementById('auth-box').className = 'hide';
       document.getElementById('search-box').className = 'card';
-      loadData();
+      loadChunk(0);
     } else {
       document.getElementById('auth-input').style.borderColor = '#e74c3c';
       setTimeout(function() {
@@ -104,11 +129,15 @@ input:focus { border-color: #58a6ff; }
   function doSearch() {
     var gh = document.getElementById('gh-input').value.trim();
     if (!gh) return;
-    if (!DATA) loadData();
-    if (!DATA) return;
     
     document.getElementById('result').className = 'hide';
     document.getElementById('notfound').className = 'hide';
+    
+    if (!DATA) {
+      document.getElementById('loading').textContent = '数据仍在加载中，请稍候...';
+      setTimeout(function() { doSearch(); }, 500);
+      return;
+    }
     
     var driver = DATA[gh];
     if (driver) {
@@ -122,6 +151,7 @@ input:focus { border-color: #58a6ff; }
     }
   }
 
+  // Bind events
   document.getElementById('auth-btn').addEventListener('click', doAuth);
   document.getElementById('search-btn').addEventListener('click', doSearch);
   document.getElementById('gh-input').addEventListener('keydown', function(e) {
@@ -131,10 +161,11 @@ input:focus { border-color: #58a6ff; }
     if (e.key === 'Enter') doAuth();
   });
 
+  // Auto login
   if (localStorage.getItem(STORAGE_KEY) === AUTH_HASH) {
     document.getElementById('auth-box').className = 'hide';
     document.getElementById('search-box').className = 'card';
-    loadData();
+    loadChunk(0);
   }
 })();
 </script>
