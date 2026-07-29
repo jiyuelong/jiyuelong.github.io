@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>司机归属查询</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0f1117; color: #e1e4e8; min-height: 100vh; display: flex; justify-content: center; padding: 40px 16px; }
+.container { max-width: 480px; width: 100%; }
+h1 { text-align: center; font-size: 1.4rem; margin-bottom: 24px; color: #58a6ff; }
+.card { background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 24px; margin-bottom: 16px; }
+.card h2 { font-size: 1rem; color: #8b949e; margin-bottom: 16px; text-align: center; }
+input[type=text], input[type=password] { width: 100%; padding: 12px 16px; background: #0d1117; border: 1px solid #30363d; border-radius: 8px; color: #e1e4e8; font-size: 1rem; outline: none; }
+input:focus { border-color: #58a6ff; }
+.btn { width: 100%; padding: 12px; margin-top: 12px; background: #238636; border: none; border-radius: 8px; color: #fff; font-size: 1rem; cursor: pointer; -webkit-appearance: none; }
+.btn:active { background: #1a7f37; }
+.stats { text-align: center; color: #8b949e; font-size: 0.9rem; margin-top: 12px; }
+.hide { display: none !important; }
+#result { background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 20px; margin-top: 16px; }
+.field { margin-bottom: 12px; }
+.field:last-child { margin-bottom: 0; }
+.label { font-size: 0.75rem; color: #8b949e; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px; }
+.value { font-size: 1.05rem; color: #f0f6fc; word-break: break-all; }
+#notfound { background: #161b22; border: 1px solid #e74c3c; border-radius: 12px; padding: 20px; margin-top: 16px; text-align: center; color: #e74c3c; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>🔍 司机归属查询</h1>
+  
+  <div id="auth-box" class="card">
+    <h2>请输入访问口令</h2>
+    <input type="password" id="auth-input" placeholder="输入口令..." />
+    <div class="btn" id="auth-btn">确认</div>
+  </div>
+
+  <div id="search-box" class="card hide">
+    <input type="text" id="gh-input" placeholder="输入工号查询..." />
+    <div class="btn" id="search-btn">查询</div>
+    <div class="stats">共收录 <span id="dc">-</span> 名司机，<span id="cc">-</span> 家公司</div>
+  </div>
+
+  <div id="result" class="hide">
+    <div class="field"><div class="label">姓名</div><div class="value" id="rn"></div></div>
+    <div class="field"><div class="label">工号</div><div class="value" id="rg"></div></div>
+    <div class="field"><div class="label">ID</div><div class="value" id="rid"></div></div>
+    <div class="field"><div class="label">所属公司</div><div class="value" id="rco"></div></div>
+  </div>
+
+  <div id="notfound" class="hide">未找到该工号，请检查输入是否正确</div>
+</div>
+
+
+<script>
+(function() {
+  var AUTH_HASH = '105725';
+  var STORAGE_KEY = 'ss_auth_v1';
+  var DATA = null;
+  var loading = false;
+
+  function simpleHash(str) {
+    var h = 0;
+    for (var i = 0; i < str.length; i++) {
+      h = ((h << 5) - h + str.charCodeAt(i)) | 0;
+    }
+    return String(Math.abs(h));
+  }
+
+  function loadData(callback) {
+    if (DATA) { callback && callback(); return; }
+    // Try global var first (from external script)
+    if (window.__DRIVER_DATA__) {
+      DATA = window.__DRIVER_DATA__;
+      showStats();
+      callback && callback();
+      return;
+    }
+    if (loading) { setTimeout(function(){ loadData(callback); }, 100); return; }
+    loading = true;
+    var s = document.createElement('script');
+    s.src = './drivers_data.js';
+    s.onload = function() {
+      if (window.__DRIVER_DATA__) {
+        DATA = window.__DRIVER_DATA__;
+        showStats();
+      }
+      loading = false;
+      callback && callback();
+    };
+    s.onerror = function() {
+      loading = false;
+      document.getElementById('dc').textContent = '加载失败';
+    };
+    document.head.appendChild(s);
+  }
+
+  function showStats() {
+    var keys = Object.keys(DATA);
+    document.getElementById('dc').textContent = keys.length;
+    var comps = {};
+    for (var i = 0; i < keys.length; i++) {
+      comps[DATA[keys[i]].company] = 1;
+    }
+    document.getElementById('cc').textContent = Object.keys(comps).length;
+  }
+
+  function doAuth() {
+    var val = document.getElementById('auth-input').value;
+    if (simpleHash(val) === AUTH_HASH) {
+      localStorage.setItem(STORAGE_KEY, AUTH_HASH);
+      document.getElementById('auth-box').className = 'hide';
+      document.getElementById('search-box').className = 'card';
+      loadData();
+    } else {
+      document.getElementById('auth-input').style.borderColor = '#e74c3c';
+      setTimeout(function() {
+        document.getElementById('auth-input').style.borderColor = '#30363d';
+      }, 1500);
+    }
+  }
+
+  function doSearch() {
+    var gh = document.getElementById('gh-input').value.trim();
+    if (!gh) return;
+    if (!DATA) {
+      loadData(function(){ doSearch(); });
+      return;
+    }
+    document.getElementById('result').className = 'hide';
+    document.getElementById('notfound').className = 'hide';
+    var driver = DATA[gh];
+    if (driver) {
+      document.getElementById('rn').textContent = driver.name;
+      document.getElementById('rg').textContent = driver.gh;
+      document.getElementById('rid').textContent = driver.id;
+      document.getElementById('rco').textContent = driver.company;
+      document.getElementById('result').className = '';
+    } else {
+      document.getElementById('notfound').className = '';
+    }
+  }
+
+  document.getElementById('auth-btn').addEventListener('click', doAuth);
+  document.getElementById('search-btn').addEventListener('click', doSearch);
+  document.getElementById('gh-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') doSearch();
+  });
+  document.getElementById('auth-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') doAuth();
+  });
+
+  if (localStorage.getItem(STORAGE_KEY) === AUTH_HASH) {
+    document.getElementById('auth-box').className = 'hide';
+    document.getElementById('search-box').className = 'card';
+    loadData();
+  }
+})();
+</script>
+
+<script>
+(function() {
+  var AUTH_HASH = '105725';
+  var STORAGE_KEY = 'ss_auth_v1';
+  var DATA = null;
+
+  function simpleHash(str) {
+    var h = 0;
+    for (var i = 0; i < str.length; i++) {
+      h = ((h << 5) - h + str.charCodeAt(i)) | 0;
+    }
+    return String(Math.abs(h));
+  }
+
+  function loadData() {
+    if (DATA) return true;
+    try {
+      var el = document.getElementById('driver-data');
+      var raw = el.textContent || el.innerText;
+      DATA = JSON.parse(raw);
+      var keys = Object.keys(DATA);
+      document.getElementById('dc').textContent = keys.length;
+      var comps = {};
+      for (var i = 0; i < keys.length; i++) {
+        comps[DATA[keys[i]].company] = 1;
+      }
+      document.getElementById('cc').textContent = Object.keys(comps).length;
+      return true;
+    } catch(e) {
+      document.getElementById('dc').textContent = '加载失败';
+      return false;
+    }
+  }
+
+  function doAuth() {
+    var val = document.getElementById('auth-input').value;
+    if (simpleHash(val) === AUTH_HASH) {
+      localStorage.setItem(STORAGE_KEY, AUTH_HASH);
+      document.getElementById('auth-box').className = 'hide';
+      document.getElementById('search-box').className = 'card';
+      loadData();
+    } else {
+      document.getElementById('auth-input').style.borderColor = '#e74c3c';
+      setTimeout(function() {
+        document.getElementById('auth-input').style.borderColor = '#30363d';
+      }, 1500);
+    }
+  }
+
+  function doSearch() {
+    var gh = document.getElementById('gh-input').value.trim();
+    if (!gh) return;
+    if (!DATA) loadData();
+    
+    document.getElementById('result').className = 'hide';
+    document.getElementById('notfound').className = 'hide';
+    
+    if (!DATA) return;
+    
+    var driver = DATA[gh];
+    if (driver) {
+      document.getElementById('rn').textContent = driver.name;
+      document.getElementById('rg').textContent = driver.gh;
+      document.getElementById('rid').textContent = driver.id;
+      document.getElementById('rco').textContent = driver.company;
+      document.getElementById('result').className = '';
+    } else {
+      document.getElementById('notfound').className = '';
+    }
+  }
+
+  // 绑定事件
+  document.getElementById('auth-btn').addEventListener('click', doAuth);
+  document.getElementById('search-btn').addEventListener('click', doSearch);
+  document.getElementById('gh-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') doSearch();
+  });
+  document.getElementById('auth-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') doAuth();
+  });
+
+  // 自动登录
+  if (localStorage.getItem(STORAGE_KEY) === AUTH_HASH) {
+    document.getElementById('auth-box').className = 'hide';
+    document.getElementById('search-box').className = 'card';
+    loadData();
+  }
+})();
+</script>
+</body>
+</html>
