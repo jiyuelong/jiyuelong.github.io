@@ -49,7 +49,7 @@ input:focus{border-color:#58a6ff}
 <script>
 (function(){
 var AUTH_HASH='105725',STORAGE_KEY='ss_auth_v1',DATA=null;
-var BASE='https://jiyuelong.github.io/guishu/chunks/',TOTAL=24,ok=0,fail=0;
+var BASE='./chunks/',TOTAL=24,ok=0,fail=0;
 window.__CHUNKS__=[];
 function simpleHash(s){var h=0;for(var i=0;i<s.length;i++)h=((h<<5)-h+s.charCodeAt(i))|0;return String(Math.abs(h))}
 function done(){ok+fail>=TOTAL&&(DATA=__CHUNKS__.reduce(function(a,c){for(var k in c)a[k]=c[k];return a},{}),showStats())}
