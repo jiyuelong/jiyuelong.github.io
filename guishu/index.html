@@ -6,7 +6,7 @@
 <title>司机归属查询</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#0f1117;color:#e1e4e8;min-height:100vh;display:flex;justify-content:center;padding:40px 16px}
+body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#0f1117;color:#e1e4e8;min-height:100vh;display:flex;justify-content:center;padding:40px 16px}
 .container{max-width:480px;width:100%}
 h1{text-align:center;font-size:1.4rem;margin-bottom:24px;color:#58a6ff}
 .card{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:24px;margin-bottom:16px}
@@ -14,7 +14,6 @@ h1{text-align:center;font-size:1.4rem;margin-bottom:24px;color:#58a6ff}
 input[type=text],input[type=password]{width:100%;padding:12px 16px;background:#0d1117;border:1px solid #30363d;border-radius:8px;color:#e1e4e8;font-size:1rem;outline:none}
 input:focus{border-color:#58a6ff}
 .btn{width:100%;padding:12px;margin-top:12px;background:#238636;border:none;border-radius:8px;color:#fff;font-size:1rem;cursor:pointer;-webkit-appearance:none}
-.btn:active{background:#1a7f37}
 .stats{text-align:center;color:#8b949e;font-size:.9rem;margin-top:12px}
 .hide{display:none!important}
 #result{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:20px;margin-top:16px}
@@ -49,93 +48,19 @@ input:focus{border-color:#58a6ff}
 </div>
 <script>
 (function(){
-var AUTH_HASH='105725',STORAGE_KEY='ss_auth_v1';
-var DATA=null;
-var DATA_BASE='https://jiyuelong.github.io/guishu/chunks/';
-var TOTAL=24,loaded=0,failed=0;
+var AUTH_HASH='105725',STORAGE_KEY='ss_auth_v1',DATA=null;
+var BASE='https://jiyuelong.github.io/guishu/chunks/',TOTAL=24,ok=0,fail=0;
 window.__CHUNKS__=[];
-
 function simpleHash(s){var h=0;for(var i=0;i<s.length;i++)h=((h<<5)-h+s.charCodeAt(i))|0;return String(Math.abs(h))}
-
-function onChunkOk(){
-loaded++;
-if(loaded+failed>=TOTAL){
-if(window.__CHUNKS__.length>0){
-DATA={};
-for(var i=0;i<window.__CHUNKS__.length;i++){var c=window.__CHUNKS__[i];for(var k in c)DATA[k]=c[k];}
-}
-showStats();
-}
-}
-function onChunkFail(){
-failed++;
-if(loaded+failed>=TOTAL){
-if(DATA){showStats()}else{document.getElementById('dc').textContent='加载失败'}
-}
-}
-
-function loadChunk(idx){
-var s=document.createElement('script');
-s.src=DATA_BASE+'data_'+idx+'.js?v=3';
-s.onload=function(){onChunkOk()};
-s.onerror=function(){onChunkFail()};
-document.head.appendChild(s);
-}
-
-function loadAll(){
-if(DATA)return;
-for(var i=0;i<TOTAL;i++)loadChunk(i);
-}
-
-function showStats(){
-document.getElementById('loading').className='hide';
-if(!DATA)return;
-var keys=Object.keys(DATA);
-document.getElementById('dc').textContent=keys.length;
-var comps={};
-for(var i=0;i<keys.length;i++)comps[DATA[keys[i]].company]=1;
-document.getElementById('cc').textContent=Object.keys(comps).length;
-}
-
-function doAuth(){
-var val=document.getElementById('auth-input').value;
-if(simpleHash(val)===AUTH_HASH){
-localStorage.setItem(STORAGE_KEY,AUTH_HASH);
-document.getElementById('auth-box').className='hide';
-document.getElementById('search-box').className='card';
-loadAll();
-}else{
-document.getElementById('auth-input').style.borderColor='#e74c3c';
-setTimeout(function(){document.getElementById('auth-input').style.borderColor='#30363d'},1500);
-}
-}
-
-function doSearch(){
-var gh=document.getElementById('gh-input').value.trim();
-if(!gh)return;
-if(!DATA){loadAll();setTimeout(function(){doSearch()},800);return}
-document.getElementById('result').className='hide';
-document.getElementById('notfound').className='hide';
-var driver=DATA[gh];
-if(driver){
-document.getElementById('rn').textContent=driver.name;
-document.getElementById('rg').textContent=driver.gh;
-document.getElementById('rid').textContent=driver.id;
-document.getElementById('rco').textContent=driver.company;
-document.getElementById('result').className='';
-}else{document.getElementById('notfound').className=''}
-}
-
-document.getElementById('auth-btn').addEventListener('click',doAuth);
-document.getElementById('search-btn').addEventListener('click',doSearch);
-document.getElementById('gh-input').addEventListener('keydown',function(e){if(e.key==='Enter')doSearch()});
-document.getElementById('auth-input').addEventListener('keydown',function(e){if(e.key==='Enter')doAuth()});
-
-if(localStorage.getItem(STORAGE_KEY)===AUTH_HASH){
-document.getElementById('auth-box').className='hide';
-document.getElementById('search-box').className='card';
-loadAll();
-}
+function done(){ok+fail>=TOTAL&&(DATA=__CHUNKS__.reduce(function(a,c){for(var k in c)a[k]=c[k];return a},{}),showStats())}
+function load(i){var s=document.createElement('script');s.src=BASE+'data_'+i+'.js?v=4';s.onload=function(){ok++;done()};s.onerror=function(){fail++;done()};document.head.appendChild(s)}
+function showStats(){document.getElementById('loading').className='hide';if(!DATA)return;var keys=Object.keys(DATA);document.getElementById('dc').textContent=keys.length;var comps={};for(var i=0;i<keys.length;i++)comps[DATA[keys[i]].company]=1;document.getElementById('cc').textContent=Object.keys(comps).length}
+function doAuth(){var v=document.getElementById('auth-input').value;if(simpleHash(v)===AUTH_HASH){localStorage.setItem(STORAGE_KEY,AUTH_HASH);document.getElementById('auth-box').className='hide';document.getElementById('search-box').className='card';for(var i=0;i<TOTAL;i++)load(i)}else{document.getElementById('auth-input').style.borderColor='#e74c3c';setTimeout(function(){document.getElementById('auth-input').style.borderColor='#30363d'},1500)}}
+function doSearch(){var gh=document.getElementById('gh-input').value.trim();if(!gh)return;if(!DATA){setTimeout(doSearch,800);return}document.getElementById('result').className='hide';document.getElementById('notfound').className='hide';var d=DATA[gh];if(d){document.getElementById('rn').textContent=d.name;document.getElementById('rg').textContent=d.gh;document.getElementById('rid').textContent=d.id;document.getElementById('rco').textContent=d.company;document.getElementById('result').className=''}else{document.getElementById('notfound').className=''}}
+document.getElementById('auth-btn').onclick=doAuth;document.getElementById('search-btn').onclick=doSearch;
+document.getElementById('gh-input').onkeydown=function(e){if(e.key==='Enter')doSearch()};
+document.getElementById('auth-input').onkeydown=function(e){if(e.key==='Enter')doAuth()};
+if(localStorage.getItem(STORAGE_KEY)===AUTH_HASH){document.getElementById('auth-box').className='hide';document.getElementById('search-box').className='card';for(var i=0;i<TOTAL;i++)load(i)}
 })();
 </script>
 </body>
