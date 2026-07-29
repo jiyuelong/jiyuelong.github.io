@@ -12,7 +12,17 @@ body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Mic
 .hdr::after { content:""; position:absolute; top:0; right:0; width:120px; height:120px; background:radial-gradient(circle,rgba(255,255,255,.12),transparent 70%); pointer-events:none; }
 .hdr h1 { margin:0 0 4px 0; font-size:19px; font-weight:700; letter-spacing:.3px; }
 .hdr .meta { font-size:12px; opacity:.88; }
+.featured { display:block; background:#141b2d; border:1px solid #2a3352; border-radius:14px; padding:20px; margin-bottom:18px; text-decoration:none; color:#e6e9f5; transition:.25s; position:relative; overflow:hidden; }
+.featured:hover,.featured:active { background:#1c2338; border-color:#3a4670; transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,0,0,.3); }
+.featured .badge { display:inline-block; background:linear-gradient(135deg,#f59e0b,#f97316); color:#fff; font-size:10px; font-weight:700; padding:2px 8px; border-radius:20px; margin-bottom:8px; letter-spacing:.5px; }
+.featured .ftitle { font-size:17px; font-weight:700; margin-bottom:4px; }
+.featured .fdesc { font-size:12px; color:#9aa3bd; }
+.featured .ficon { position:absolute; right:18px; top:50%; transform:translateY(-50%); font-size:36px; opacity:.6; }
 .section-title { font-size:14px; color:#9aa3bd; margin:18px 0 10px 4px; font-weight:500; display:flex; align-items:center; gap:6px; }
+.section-title .dot { width:6px; height:6px; border-radius:50%; }
+.dot-blue { background:#5b8def; }
+.dot-red { background:#ef4444; }
+.dot-green { background:#22c55e; }
 .grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
 .card { background:#141b2d; border:1px solid #2a3352; border-radius:12px; padding:20px 14px; text-align:center; text-decoration:none; color:#e6e9f5; transition:.2s; display:block; }
 .card:hover,.card:active { background:#1c2338; border-color:#3a4670; transform:translateY(-2px); box-shadow:0 4px 12px rgba(0,0,0,.3); }
@@ -30,7 +40,14 @@ body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Mic
     <div class="meta">北京盛世兄弟汽车租赁有限公司 · 每日 18:00 更新</div>
   </div>
 
-  <div class="section-title">📊 分维度看板</div>
+  <a class="featured" href="./driver360/">
+    <span class="badge">推荐</span>
+    <div class="ftitle">司机 360 全景看板</div>
+    <div class="fdesc">一人一档 · 全维度数据汇总 · 支持工号/姓名搜索</div>
+    <div class="ficon">👤</div>
+  </a>
+
+  <div class="section-title"><span class="dot dot-blue"></span>核心运营</div>
   <div class="grid">
     <a class="card" href="./cejiu/">
       <div class="icon">🍺</div>
@@ -52,8 +69,12 @@ body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Mic
       <div class="name">违章看板</div>
       <div class="desc">违章明细 · 大队汇总</div>
     </a>
+  </div>
+
+  <div class="section-title"><span class="dot dot-red"></span>风险专项</div>
+  <div class="grid">
     <a class="card" href="./accident/">
-      <div class="icon"></div>
+      <div class="icon">💥</div>
       <div class="name">事故看板</div>
       <div class="desc">责任划分 · 出险金额</div>
     </a>
@@ -63,19 +84,23 @@ body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Mic
       <div class="desc">高危司机 · 累计事故</div>
     </a>
     <a class="card" href="./jiuwei/">
-      <div class="icon"></div>
+      <div class="icon">🚫</div>
       <div class="name">酒驾风险</div>
       <div class="desc">测酒不合格 · 酒驾追溯</div>
     </a>
+    <a class="card" href="./chuxian/">
+      <div class="icon">🛡️</div>
+      <div class="name">出险预警</div>
+      <div class="desc">出行风险 · 提前预警</div>
+    </a>
+  </div>
+
+  <div class="section-title"><span class="dot dot-green"></span>其他</div>
+  <div class="grid">
     <a class="card" href="./jianzhi/">
       <div class="icon">💼</div>
       <div class="name">兼职看板</div>
       <div class="desc">兼职司机 · 完单数据</div>
-    </a>
-    <a class="card" href="./chuxian/">
-      <div class="icon"></div>
-      <div class="name">出险预警</div>
-      <div class="desc">出行风险 · 提前预警</div>
     </a>
     <a class="card" href="./guishu/">
       <div class="icon">🔍</div>
