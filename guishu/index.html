@@ -174,10 +174,8 @@ input:focus { border-color: #58a6ff; }
 
   function loadData() {
     if (DATA) return true;
-    try {
-      var el = document.getElementById('driver-data');
-      var raw = el.textContent || el.innerText;
-      DATA = JSON.parse(raw);
+    if (window.__DRIVER_DATA__) {
+      DATA = window.__DRIVER_DATA__;
       var keys = Object.keys(DATA);
       document.getElementById('dc').textContent = keys.length;
       var comps = {};
@@ -186,10 +184,28 @@ input:focus { border-color: #58a6ff; }
       }
       document.getElementById('cc').textContent = Object.keys(comps).length;
       return true;
-    } catch(e) {
-      document.getElementById('dc').textContent = '加载失败';
-      return false;
     }
+    var s = document.createElement('script');
+    s.src = './drivers_data.js';
+    s.onload = function() {
+      if (window.__DRIVER_DATA__) {
+        DATA = window.__DRIVER_DATA__;
+        var keys = Object.keys(DATA);
+        document.getElementById('dc').textContent = keys.length;
+        var comps = {};
+        for (var i = 0; i < keys.length; i++) {
+          comps[DATA[keys[i]].company] = 1;
+        }
+        document.getElementById('cc').textContent = Object.keys(comps).length;
+      } else {
+        document.getElementById('dc').textContent = '加载失败';
+      }
+    };
+    s.onerror = function() {
+      document.getElementById('dc').textContent = '加载失败';
+    };
+    document.head.appendChild(s);
+    return false;
   }
 
   function doAuth() {
